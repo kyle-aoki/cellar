@@ -30,6 +30,5 @@ func Search(ctx *fiber.Ctx) error {
 	data, err := json.Marshal(results)
 	util.MustExec(err)
 
-	// ctx.Response().Header.Add("Content-Type", "application/json")
 	return ctx.Send(data)
 }

@@ -2,6 +2,8 @@ package web
 
 import (
 	"api/pkg/routing"
+	"log"
+
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -10,5 +12,6 @@ func Init() {
 
 	routing.Init(app)
 
-	app.Listen(":3000")
+	err := app.Listen(":8080")
+	log.Print(err)
 }

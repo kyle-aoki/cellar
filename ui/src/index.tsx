@@ -6,13 +6,16 @@ import createSagaMiddleware from "redux-saga";
 import RootComponent from "./app";
 import { FileSystemRedux } from "./filesystem/redux";
 import MiddlewareRegistry from "./redux/middleware-registry";
+import { View } from "./view/redux";
 
 export interface GlobalState {
   FileSystem: FileSystemRedux.State;
+  View: View.State;
 }
 
 const reducers = combineReducers({
   FileSystem: FileSystemRedux.Reducer,
+  View: View.Reducer,
 });
 
 export const sagaMiddleware = createSagaMiddleware();

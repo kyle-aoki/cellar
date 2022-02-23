@@ -1,6 +1,7 @@
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import FsObject from "../model/fsobject";
+import { View } from "../view/redux";
 import { FileSystemRedux } from "./redux";
 
 namespace FOC {
@@ -23,9 +24,15 @@ namespace FOC {
 }
 export function FsObjectComponent({ fsObject }: { fsObject: FsObject }) {
   const FsExecutor = new FileSystemRedux.Executor(useDispatch());
-  console.log('render')
+  function onClick() {
+    if (!fsObject.file) {
+      FsExecutor.FolderClick(fsObject.name);
+    } else {
+      FsExecutor.Saga.FindFile(fsObject.name, fsObject.path);
+    }
+  }
   return (
-    <FOC.Container onClick={() => FsExecutor.FolderClick(fsObject.name)}>
+    <FOC.Container onClick={onClick}>
       {fsObject.file ? "📝 " : "📁 "}
       {fsObject.name}
     </FOC.Container>
@@ -38,10 +45,11 @@ namespace FOCS {
     flex-direction: column;
   `;
 }
-export function FsObjectComponents({ fsObjects }: { fsObjects: FsObject[] }) {
+export function FsObjectComponents() {
+  const state = FileSystemRedux.useState();
   return (
     <FOCS.Container>
-      {fsObjects.map((fsObject, index) => (
+      {state.objects.map((fsObject, index) => (
         <FsObjectComponent key={index} fsObject={fsObject} />
       ))}
     </FOCS.Container>

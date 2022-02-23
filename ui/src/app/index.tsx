@@ -7,6 +7,7 @@ import { GlobalStyles } from "./global-styles";
 import { App } from "./styled";
 
 export default function RootComponent() {
+    
   return (
     <>
       <GlobalStyles />

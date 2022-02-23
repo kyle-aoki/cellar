@@ -9,11 +9,11 @@ import { FileSystem } from "./styled";
 
 export default function FileSystemComponent() {
   const FileSystemExecutor = new FileSystemRedux.Executor(useDispatch());
-  const state = FileSystemRedux.useState();
+  const { showCreateModal, modalType, path, shouldUpdate } = FileSystemRedux.useState();
 
   useEffect(() => {
-    FileSystemExecutor.Saga.Search(state.path);
-  }, [state.path, state.shouldUpdate]);
+    FileSystemExecutor.Saga.Search(path);
+  }, [path, shouldUpdate]);
 
   return (
     <>
@@ -21,14 +21,14 @@ export default function FileSystemComponent() {
         <ControlBarC />
         <PathBarC />
         <FileSystem.ObjectContainer>
-          <FsObjectCs fsObjects={state.objects} />
-          {state.showCreateModal && state.modalType == FileSystemRedux.ModalType.FOLDER && (
-            <CreateModal modalType={FileSystemRedux.ModalType.FOLDER} />
-          )}
-          {state.showCreateModal && state.modalType == FileSystemRedux.ModalType.FILE && (
-            <CreateModal modalType={FileSystemRedux.ModalType.FILE} />
-          )}
+          <FsObjectCs />
         </FileSystem.ObjectContainer>
+        {showCreateModal && modalType == FileSystemRedux.ModalType.FOLDER && (
+          <CreateModal modalType={FileSystemRedux.ModalType.FOLDER} />
+        )}
+        {showCreateModal && modalType == FileSystemRedux.ModalType.FILE && (
+          <CreateModal modalType={FileSystemRedux.ModalType.FILE} />
+        )}
       </FileSystem.Container>
     </>
   );

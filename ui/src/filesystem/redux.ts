@@ -4,6 +4,7 @@ import API from "../api";
 import FsObject from "../model/fsobject";
 import { useSelector } from "react-redux";
 import { GlobalState } from "..";
+import { View } from "../view/redux";
 
 export namespace FileSystemRedux {
   export enum ModalType {
@@ -40,11 +41,9 @@ export namespace FileSystemRedux {
       return { ...state, objects: action.payload.fsObjects };
     });
     export const ToggleModal = init((state: State, action: BaseAction) => {
-      return {
-        ...state,
-        showCreateModal: !state.showCreateModal,
-        modalType: action.payload.modalType,
-      };
+      state.showCreateModal = !state.showCreateModal;
+      state.modalType = action.payload.modalType;
+      return { ...state };
     });
     export const FolderClick = init((state: State, action: BaseAction) => {
       state.prevPaths.push(state.path);
@@ -90,11 +89,16 @@ export namespace FileSystemRedux {
         name: action.payload.name,
         path: action.payload.state.path,
         file: true,
-        content: "",
+        content: "LMFAO",
       };
       yield call(API.create, newFsObject);
       yield exec.ToggleModal(ModalType.FILE);
       yield exec.ShouldUpdate();
+    });
+    export const FindFile = initSaga(function* (action: any): any {
+      const ViewExec = new View.Executor(put);
+      const response = yield call(API.find, action.payload);
+      yield ViewExec.SetContent(response.content);
     });
   }
 
@@ -129,6 +133,7 @@ export namespace FileSystemRedux {
       CreateFile = (name: string, state: State) =>
         this.exec(Saga.CreateFile.action({ name, state }));
       Search = (path: string) => this.exec(Saga.Search.action({ path }));
+      FindFile = (name: string, path: string) => this.exec(Saga.FindFile.action({ name, path }));
     })(this.exec);
   }
 }

@@ -2,7 +2,7 @@ import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import FsObject from "../model/fsobject";
 import { View } from "../view/redux";
-import { FileSystemRedux } from "./redux";
+import { FileSystem } from "./redux";
 
 namespace FOC {
   export const Container = styled.div`
@@ -23,7 +23,7 @@ namespace FOC {
   `;
 }
 export function FsObjectComponent({ fsObject }: { fsObject: FsObject }) {
-  const FsExecutor = new FileSystemRedux.Executor(useDispatch());
+  const FsExecutor = new FileSystem.Executor(useDispatch());
   function onClick() {
     if (!fsObject.file) {
       FsExecutor.FolderClick(fsObject.name);
@@ -46,7 +46,7 @@ namespace FOCS {
   `;
 }
 export function FsObjectComponents() {
-  const state = FileSystemRedux.useState();
+  const state = FileSystem.useState();
   return (
     <FOCS.Container>
       {state.objects.map((fsObject, index) => (

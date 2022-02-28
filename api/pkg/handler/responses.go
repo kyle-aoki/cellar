@@ -1,4 +1,4 @@
-package secret
+package handler
 
 import (
 	"api/pkg/util"
@@ -11,6 +11,10 @@ type ErrorMessage struct {
 
 func AlreadyExists() string {
 	return JSON(ErrorMessage{Message: "Object already exists."})
+}
+
+func SomethingWentWrong() string {
+	return JSON(ErrorMessage{Message: "Something went wrong."})
 }
 
 func JSON(a any) string {

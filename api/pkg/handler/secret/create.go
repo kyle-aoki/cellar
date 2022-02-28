@@ -2,6 +2,7 @@ package secret
 
 import (
 	"api/pkg/db"
+	"api/pkg/handler"
 	"api/pkg/service"
 	"api/pkg/util"
 	"encoding/json"
@@ -17,7 +18,7 @@ func Create(ctx *fiber.Ctx) error {
 	rows := tx.NamedQuery(object.FindQ(), object)
 
 	if rows.Next() {
-		return ctx.SendString(tx.Rollback(AlreadyExists()))
+		return ctx.SendString(tx.Rollback(handler.AlreadyExists()))
 	}
 
 	rows.Close()

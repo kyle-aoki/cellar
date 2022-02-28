@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
-import { FileSystemRedux } from "./redux";
+import { FileSystem } from "./redux";
 
 export namespace ControlBar {
   export const Container = styled.div`
@@ -28,16 +28,16 @@ export namespace ControlBar {
 }
 
 export default function ControlBarComponent() {
-  const Executor = new FileSystemRedux.Executor(useDispatch());
+  const Executor = new FileSystem.Executor(useDispatch());
   return (
     <ControlBar.Container>
       <ControlBar.AddFolderButton
-        onClick={() => Executor.ToggleModal(FileSystemRedux.ModalType.FOLDER)}
+        onClick={() => Executor.ToggleModal(FileSystem.ModalType.FOLDER)}
       >
         Add Folder
       </ControlBar.AddFolderButton>
       <ControlBar.AddFolderButton
-        onClick={() => Executor.ToggleModal(FileSystemRedux.ModalType.FILE)}
+        onClick={() => Executor.ToggleModal(FileSystem.ModalType.FILE)}
       >
         Add File
       </ControlBar.AddFolderButton>

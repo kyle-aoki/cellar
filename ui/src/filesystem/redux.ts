@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { GlobalState } from "..";
 import { View } from "../view/redux";
 
-export namespace FileSystemRedux {
+export namespace FileSystem {
   export enum ModalType {
     FILE,
     FOLDER,

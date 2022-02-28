@@ -4,17 +4,17 @@ import { Provider } from "react-redux";
 import { applyMiddleware, combineReducers, createStore } from "redux";
 import createSagaMiddleware from "redux-saga";
 import RootComponent from "./app";
-import { FileSystemRedux } from "./filesystem/redux";
+import { FileSystem } from "./filesystem/redux";
 import MiddlewareRegistry from "./redux/middleware-registry";
 import { View } from "./view/redux";
 
 export interface GlobalState {
-  FileSystem: FileSystemRedux.State;
+  FileSystem: FileSystem.State;
   View: View.State;
 }
 
 const reducers = combineReducers({
-  FileSystem: FileSystemRedux.Reducer,
+  FileSystem: FileSystem.Reducer,
   View: View.Reducer,
 });
 

@@ -5,6 +5,13 @@ CREATE TABLE IF NOT EXISTS object (
     name VARCHAR(255),
     path VARCHAR(255),
     file BOOLEAN NOT NULL,
+    PRIMARY KEY (path, name)
+);
+
+CREATE TABLE IF NOT EXISTS content (
+    name VARCHAR(255),
+    path VARCHAR(255),
+    version INT UNSIGNED,
     content TEXT,
     PRIMARY KEY (path, name)
 );

@@ -14,3 +14,10 @@ func ParseObject(ctx *fiber.Ctx) *model.Object {
 	util.MustExec(err)
 	return &object
 }
+
+func ParseContent(c *fiber.Ctx) *model.Content {
+	content := model.Content{}
+	err := json.Unmarshal(c.Body(), &content)
+	util.MustExec(err)
+	return &content
+}

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
-import { FileSystemRedux } from "./redux";
+import { FileSystem } from "./redux";
 
 export namespace Create {
   export const Backdrop = styled.div`
@@ -69,12 +69,12 @@ export namespace Create {
   `;
 }
 
-export default function CreateModal({ modalType }: { modalType: FileSystemRedux.ModalType }) {
-  const FsExecutor = new FileSystemRedux.Executor(useDispatch());
-  const State = FileSystemRedux.useState();
+export default function CreateModal({ modalType }: { modalType: FileSystem.ModalType }) {
+  const FsExecutor = new FileSystem.Executor(useDispatch());
+  const State = FileSystem.useState();
   const [newObjectName, setNewObjectName] = useState("");
   function onClick() {
-    if (modalType === FileSystemRedux.ModalType.FILE) {
+    if (modalType === FileSystem.ModalType.FILE) {
       FsExecutor.Saga.CreateFile(newObjectName, State);
     } else {
       FsExecutor.Saga.CreateFolder(newObjectName, State);

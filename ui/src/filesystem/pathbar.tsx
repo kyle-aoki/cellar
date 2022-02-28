@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
-import { FileSystemRedux } from "./redux";
+import { FileSystem } from "./redux";
 
 export namespace PathBar {
   export const Container = styled.div`
@@ -32,8 +32,8 @@ export namespace PathBar {
 }
 
 export default function PathBarComponent() {
-  const FileSystemState = FileSystemRedux.useState();
-  const FsExec = new FileSystemRedux.Executor(useDispatch());
+  const FileSystemState = FileSystem.useState();
+  const FsExec = new FileSystem.Executor(useDispatch());
   return (
     <PathBar.Container>
       <PathBar.BackButton onClick={() => FsExec.ChangeDirDown()}>{"<"}</PathBar.BackButton>

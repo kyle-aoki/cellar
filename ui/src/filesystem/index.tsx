@@ -4,12 +4,12 @@ import ControlBarC from "./control-bar";
 import CreateModal from "./create";
 import { FsObjectComponents as FsObjectCs } from "./fs-object";
 import PathBarC from "./pathbar";
-import { FileSystemRedux } from "./redux";
-import { FileSystem } from "./styled";
+import { FileSystem } from "./redux";
+import { FileSystemSt } from "./styled";
 
 export default function FileSystemComponent() {
-  const FileSystemExecutor = new FileSystemRedux.Executor(useDispatch());
-  const { showCreateModal, modalType, path, shouldUpdate } = FileSystemRedux.useState();
+  const FileSystemExecutor = new FileSystem.Executor(useDispatch());
+  const { showCreateModal, modalType, path, shouldUpdate } = FileSystem.useState();
 
   useEffect(() => {
     FileSystemExecutor.Saga.Search(path);
@@ -17,19 +17,19 @@ export default function FileSystemComponent() {
 
   return (
     <>
-      <FileSystem.Container>
+      <FileSystemSt.Container>
         <ControlBarC />
         <PathBarC />
-        <FileSystem.ObjectContainer>
+        <FileSystemSt.ObjectContainer>
           <FsObjectCs />
-        </FileSystem.ObjectContainer>
-        {showCreateModal && modalType == FileSystemRedux.ModalType.FOLDER && (
-          <CreateModal modalType={FileSystemRedux.ModalType.FOLDER} />
+        </FileSystemSt.ObjectContainer>
+        {showCreateModal && modalType == FileSystem.ModalType.FOLDER && (
+          <CreateModal modalType={FileSystem.ModalType.FOLDER} />
         )}
-        {showCreateModal && modalType == FileSystemRedux.ModalType.FILE && (
-          <CreateModal modalType={FileSystemRedux.ModalType.FILE} />
+        {showCreateModal && modalType == FileSystem.ModalType.FILE && (
+          <CreateModal modalType={FileSystem.ModalType.FILE} />
         )}
-      </FileSystem.Container>
+      </FileSystemSt.Container>
     </>
   );
 }

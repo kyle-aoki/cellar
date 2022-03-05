@@ -1,50 +1,42 @@
 import { takeEvery } from "redux-saga/effects";
-import { sagaMiddleware } from "..";
 import MiddlewareRegistry from "./middleware-registry";
 
+// dispatch instance or put function
 type Exec = any;
 
-export class BaseExecutor {
-  exec: Exec;
-  constructor(exec: Exec) {
-    this.exec = exec;
+export class BaseDispatcher {
+  x: Exec;
+  constructor(executor: Exec) {
+    this.x = executor;
   }
 }
 
-class Iterator {
+class ActionTypeIterator {
   static count: number = 0;
   static next(): number {
-    Iterator.count += 1;
-    return Iterator.count;
+    ActionTypeIterator.count += 1;
+    return ActionTypeIterator.count;
   }
 }
 
-type LogicFunc = (state: any, action: BaseAction) => any;
+type LogicFunc = (state: any, action: Ac) => any;
 
-export function init(logic: LogicFunc) {
-  const type = Iterator.next();
-  return {
-    type,
-    createAction: (payload?: any) => ({ type, payload }),
-    logic,
-  };
+export function f(lg: LogicFunc) {
+  const type = ActionTypeIterator.next();
+  return { type, ac: (data?: any) => ({ type, data }), lg };
 }
 
-export interface BaseAction {
+export interface Ac {
   type: number;
-  payload: any;
+  data: any;
 }
 
-export function initSaga(worker: (action: any) => any) {
-  const type = Iterator.next().toString();
+export function sf(middlewareFunction: (action: any) => any) {
+  const type = ActionTypeIterator.next().toString();
+
   MiddlewareRegistry.add(function* () {
-    yield takeEvery(type, worker);
+    yield takeEvery(type, middlewareFunction);
   });
-  return {
-    type,
-    action: (payload?: any) => ({
-      type,
-      payload,
-    }),
-  };
+
+  return { type, ac: (data?: any) => ({ type, data }) };
 }

@@ -1,4 +1,4 @@
-import { BaseAction, BaseExecutor, init, initSaga } from "../redux/config";
+import { Ac, BaseDispatcher as BaseExer, f, sf } from "../redux/config";
 import { call, put, takeEvery, takeLatest } from "redux-saga/effects";
 import API from "../api";
 import FsObject from "../model/fsobject";
@@ -11,129 +11,110 @@ export namespace FileSystem {
     FILE,
     FOLDER,
   }
-  export interface State {
+  export interface St {
     prevPaths: string[];
     path: string;
     shouldUpdate: number;
     objects: FsObject[];
-    showCreateModal: boolean;
+    createModal: boolean;
     modalType: ModalType;
   }
-  export const initialState: State = {
+  export const initialSt: St = {
     prevPaths: [],
     path: "/",
     shouldUpdate: 0,
     objects: [],
-    showCreateModal: false,
+    createModal: false,
     modalType: ModalType.FOLDER,
   };
-  export const workingState: State = { ...initialState };
-  export const useState = () => useSelector((state: GlobalState) => state.FileSystem);
+  export const workingSt: St = { ...initialSt };
+  export const useSt = () => useSelector((st: GlobalState) => st.FileSystem);
 
-  export namespace Action {
-    export const Default = init((state: State, action: BaseAction) => {
-      return { ...state };
-    });
-    export const ShouldUpdate = init((state: State, action: BaseAction) => {
-      return { ...state, shouldUpdate: state.shouldUpdate + 1 };
-    });
-    export const SetObjects = init((state: State, action: BaseAction) => {
-      return { ...state, objects: action.payload.fsObjects };
-    });
-    export const ToggleModal = init((state: State, action: BaseAction) => {
-      state.showCreateModal = !state.showCreateModal;
-      state.modalType = action.payload.modalType;
-      return { ...state };
-    });
-    export const FolderClick = init((state: State, action: BaseAction) => {
-      state.prevPaths.push(state.path);
-      if (state.path === "/") {
-        return { ...state, path: `/${action.payload.name}` };
-      }
-      return { ...state, path: `${state.path}/${action.payload.name}` };
-    });
-    export const ChangeDirDown = init((state: State, action: BaseAction) => {
-      if (state.path === "/") return { ...state };
-      return { ...state, path: state.prevPaths.pop() };
-    });
-    export const AddFile = init((state: State, action: BaseAction) => {});
-  }
+  // Actions
+  const Default = f((st: St, _: Ac) => ({ ...st }));
+  const ShouldUpdate = f((st: St, _: Ac) => ({ ...st, shouldUpdate: st.shouldUpdate + 1 }));
+  const SetObjects = f((st: St, ac: Ac) => ({ ...st, objects: ac.data.fsObjects }));
+  const ToggleModal = f((st: St, ac: Ac) => ({ ...st, createModal: !st.createModal, modalType: ac.data.modalType }));
 
-  export namespace Saga {
-    export const Search = initSaga(function* (action: any): any {
-      const executor = new Executor(put);
-      try {
-        const fsObjects = yield call(API.search, {
-          path: action.payload.path,
-        } as FsObject);
-        yield executor.SetObjects(fsObjects);
-      } catch (e: any) {
-        yield executor.Default();
-      }
-    });
-    export const CreateFolder = initSaga(function* (action: any): any {
-      const exec = new Executor(put);
-      const newFsObject: FsObject = {
-        name: action.payload.name,
-        path: action.payload.state.path,
-        file: false,
-        content: null,
-      };
-      yield call(API.create, newFsObject);
-      yield exec.ToggleModal(ModalType.FOLDER);
-      yield exec.ShouldUpdate();
-    });
-    export const CreateFile = initSaga(function* (action: any): any {
-      const exec = new Executor(put);
-      const newFsObject: FsObject = {
-        name: action.payload.name,
-        path: action.payload.state.path,
-        file: true,
-        content: "LMFAO",
-      };
-      yield call(API.create, newFsObject);
-      yield exec.ToggleModal(ModalType.FILE);
-      yield exec.ShouldUpdate();
-    });
-    export const FindFile = initSaga(function* (action: any): any {
-      const ViewExec = new View.Executor(put);
-      const response = yield call(API.find, action.payload);
-      yield ViewExec.SetContent(response.content);
-    });
-  }
-
-  export function Reducer(state: State = workingState, action: BaseAction) {
-    // prettier-ignore
-    switch (action.type) {
-        case Action.SetObjects.type: return Action.SetObjects.logic(state, action);
-        case Action.ToggleModal.type: return Action.ToggleModal.logic(state, action);
-        case Action.FolderClick.type: return Action.FolderClick.logic(state, action);
-        case Action.ChangeDirDown.type: return Action.ChangeDirDown.logic(state, action);
-        case Action.AddFile.type: return Action.AddFile.logic(state, action);
-        case Action.ShouldUpdate.type: return Action.ShouldUpdate.logic(state, action);
-        
-        default: return Action.Default.logic(state, action);
+  const FolderClick = f((st: St, ac: Ac) => {
+    st.prevPaths.push(st.path);
+    if (st.path === "/") {
+      return { ...st, path: `/${ac.data.name}` };
     }
+    return { ...st, path: `${st.path}/${ac.data.name}` };
+  });
+
+  const ChangeDirDown = f((st: St, ac: Ac) => {
+    if (st.path === "/") return { ...st };
+    return { ...st, path: st.prevPaths.pop() };
+  });
+
+  // Saga
+  const Search = sf(function* (ac: any): any {
+    const executor = new Exer(put);
+    try {
+      const fsObjects = yield call(API.search, {
+        path: ac.data.path,
+      } as FsObject);
+      yield executor.SetObjects(fsObjects);
+    } catch (e: any) {
+      yield executor.Default();
+    }
+  });
+  const CreateFolder = sf(function* (ac: any): any {
+    const exec = new Exer(put);
+    const newFsObject: FsObject = {
+      name: ac.data.name,
+      path: ac.data.st.path,
+      file: false,
+      content: null,
+    };
+    yield call(API.create, newFsObject);
+    yield exec.ToggleModal(ModalType.FOLDER);
+    yield exec.ShouldUpdate();
+  });
+  const CreateFile = sf(function* (ac: any): any {
+    const exec = new Exer(put);
+    const newFsObject: FsObject = {
+      name: ac.data.name,
+      path: ac.data.st.path,
+      file: true,
+      content: "LMFAO",
+    };
+    yield call(API.create, newFsObject);
+    yield exec.ToggleModal(ModalType.FILE);
+    yield exec.ShouldUpdate();
+  });
+  const FindFile = sf(function* (ac: any): any {
+    const ViewExec = new View.Executor(put);
+    const response = yield call(API.find, ac.data);
+    yield ViewExec.SetContent(response.content);
+  });
+
+  export class Exer extends BaseExer {
+    Default = () => this.x(Default.ac());
+    SetObjects = (fsObjects: FsObject[]) => this.x(SetObjects.ac({ fsObjects }));
+    ToggleModal = (modalType: ModalType) => this.x(ToggleModal.ac({ modalType }));
+    FolderClick = (name: string) => this.x(FolderClick.ac({ name }));
+    ChangeDirDown = () => this.x(ChangeDirDown.ac());
+    ShouldUpdate = () => this.x(ShouldUpdate.ac());
+
+    // Saga
+    CreateFolder = (name: string, st: St) => this.x(CreateFolder.ac({ name, st }));
+    CreateFile = (name: string, st: St) => this.x(CreateFile.ac({ name, st }));
+    Search = (path: string) => this.x(Search.ac({ path }));
+    FindFile = (name: string, path: string) => this.x(FindFile.ac({ name, path }));
   }
 
-  export class Executor extends BaseExecutor {
-    Default = () => this.exec(Action.Default.createAction());
-    SetObjects = (fsObjects: FsObject[]) =>
-      this.exec(Action.SetObjects.createAction({ fsObjects }));
-    ToggleModal = (modalType: ModalType) =>
-      this.exec(Action.ToggleModal.createAction({ modalType }));
-    FolderClick = (name: string) => this.exec(Action.FolderClick.createAction({ name }));
-    ChangeDirDown = () => this.exec(Action.ChangeDirDown.createAction());
-    AddFile = () => this.exec(Action.AddFile.createAction());
-    ShouldUpdate = () => this.exec(Action.ShouldUpdate.createAction());
-
-    Saga = new (class extends BaseExecutor {
-      CreateFolder = (name: string, state: State) =>
-        this.exec(Saga.CreateFolder.action({ name, state }));
-      CreateFile = (name: string, state: State) =>
-        this.exec(Saga.CreateFile.action({ name, state }));
-      Search = (path: string) => this.exec(Saga.Search.action({ path }));
-      FindFile = (name: string, path: string) => this.exec(Saga.FindFile.action({ name, path }));
-    })(this.exec);
+  export function Reducer(st: St = workingSt, ac: Ac) {
+    // prettier-ignore
+    switch (ac.type) {
+        case SetObjects.type:     return SetObjects.lg(st, ac);
+        case ToggleModal.type:    return ToggleModal.lg(st, ac);
+        case FolderClick.type:    return FolderClick.lg(st, ac);
+        case ChangeDirDown.type:  return ChangeDirDown.lg(st, ac);
+        case ShouldUpdate.type:   return ShouldUpdate.lg(st, ac);
+        default:                  return Default.lg(st, ac);
+    }
   }
 }

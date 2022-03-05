@@ -32,8 +32,8 @@ export namespace PathBar {
 }
 
 export default function PathBarComponent() {
-  const FileSystemState = FileSystem.useState();
-  const FsExec = new FileSystem.Executor(useDispatch());
+  const FileSystemState = FileSystem.useSt();
+  const FsExec = new FileSystem.Exer(useDispatch());
   return (
     <PathBar.Container>
       <PathBar.BackButton onClick={() => FsExec.ChangeDirDown()}>{"<"}</PathBar.BackButton>

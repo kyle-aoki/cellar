@@ -9,7 +9,7 @@ import MiddlewareRegistry from "./redux/middleware-registry";
 import { View } from "./view/redux";
 
 export interface GlobalState {
-  FileSystem: FileSystem.State;
+  FileSystem: FileSystem.St;
   View: View.State;
 }
 
@@ -19,6 +19,7 @@ const reducers = combineReducers({
 });
 
 export const sagaMiddleware = createSagaMiddleware();
+
 const store = createStore(reducers, applyMiddleware(sagaMiddleware));
 
 for (const mw of MiddlewareRegistry.getAll()) {

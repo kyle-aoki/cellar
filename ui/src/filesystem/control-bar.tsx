@@ -28,7 +28,7 @@ export namespace ControlBar {
 }
 
 export default function ControlBarComponent() {
-  const Executor = new FileSystem.Executor(useDispatch());
+  const Executor = new FileSystem.Exer(useDispatch());
   return (
     <ControlBar.Container>
       <ControlBar.AddFolderButton

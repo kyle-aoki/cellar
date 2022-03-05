@@ -10,7 +10,7 @@ namespace FOC {
     display: flex;
     align-items: center;
     padding-left: 10px;
-    height: 20px;
+    height: 25px;
     border-bottom: 1px solid gray;
     user-select: none;
     font-family: monospace;
@@ -23,12 +23,12 @@ namespace FOC {
   `;
 }
 export function FsObjectComponent({ fsObject }: { fsObject: FsObject }) {
-  const FsExecutor = new FileSystem.Executor(useDispatch());
+  const FsExecutor = new FileSystem.Exer(useDispatch());
   function onClick() {
     if (!fsObject.file) {
       FsExecutor.FolderClick(fsObject.name);
     } else {
-      FsExecutor.Saga.FindFile(fsObject.name, fsObject.path);
+      FsExecutor.FindFile(fsObject.name, fsObject.path);
     }
   }
   return (
@@ -46,7 +46,7 @@ namespace FOCS {
   `;
 }
 export function FsObjectComponents() {
-  const state = FileSystem.useState();
+  const state = FileSystem.useSt();
   return (
     <FOCS.Container>
       {state.objects.map((fsObject, index) => (

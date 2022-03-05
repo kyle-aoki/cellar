@@ -8,11 +8,11 @@ import { FileSystem } from "./redux";
 import { FileSystemSt } from "./styled";
 
 export default function FileSystemComponent() {
-  const FileSystemExecutor = new FileSystem.Executor(useDispatch());
-  const { showCreateModal, modalType, path, shouldUpdate } = FileSystem.useState();
+  const FSExer = new FileSystem.Exer(useDispatch());
+  const { createModal: showCreateModal, modalType, path, shouldUpdate } = FileSystem.useSt();
 
   useEffect(() => {
-    FileSystemExecutor.Saga.Search(path);
+    FSExer.Search(path);
   }, [path, shouldUpdate]);
 
   return (

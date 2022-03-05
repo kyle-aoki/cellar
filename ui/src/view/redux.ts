@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { GlobalState } from "..";
-import { BaseAction, BaseExecutor, init, initSaga } from "../redux/config";
+import { Ac, BaseDispatcher, f, sf } from "../redux/config";
 
 export namespace View {
   export interface State {
@@ -12,21 +12,21 @@ export namespace View {
 
   export const useState = () => useSelector((state: GlobalState) => state.View);
 
-  export function Reducer(state: State = initialState, action: BaseAction) {
+  export function Reducer(state: State = initialState, action: Ac) {
     // prettier-ignore
     switch (action.type) {
-    case Action.SetContent.type: return Action.SetContent.logic(state, action);
+    case Action.SetContent.type: return Action.SetContent.lg(state, action);
     default: return state;
     }
   }
 
   export namespace Action {
-    export const SetContent = init((state: State, action: BaseAction) => {
-      return { ...state, content: action.payload.content };
+    export const SetContent = f((state: State, action: Ac) => {
+      return { ...state, content: action.data.content };
     });
   }
 
-  export class Executor extends BaseExecutor {
-    SetContent = (content: string) => this.exec(Action.SetContent.createAction({ content }));
+  export class Executor extends BaseDispatcher {
+    SetContent = (content: string) => this.x(Action.SetContent.ac({ content }));
   }
 }

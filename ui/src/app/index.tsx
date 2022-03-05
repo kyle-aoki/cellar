@@ -1,8 +1,8 @@
 import React from "react";
-import FileSystemComponent from "../filesystem";
-import NavbarComponent from "../navbar";
-import SplitViewComponent from "../splitview";
-import ViewComponent from "../view";
+import FileSystemCmpt from "../filesystem";
+import NavbarCmpt from "../navbar";
+import SplitViewCmpt from "../splitview";
+import ViewCmpt from "../view";
 import { GlobalStyles } from "./global-styles";
 import { App } from "./styled";
 
@@ -12,11 +12,11 @@ export default function RootComponent() {
     <>
       <GlobalStyles />
       <App.Container>
-        <NavbarComponent />
-        <SplitViewComponent>
-          <FileSystemComponent />
-          <ViewComponent />
-        </SplitViewComponent>
+        <NavbarCmpt />
+        <SplitViewCmpt>
+          <FileSystemCmpt />
+          <ViewCmpt />
+        </SplitViewCmpt>
       </App.Container>
     </>
   );

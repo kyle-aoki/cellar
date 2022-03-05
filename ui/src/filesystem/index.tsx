@@ -5,11 +5,11 @@ import CreateModal from "./create";
 import { FsObjectComponents as FsObjectCs } from "./fs-object";
 import PathBarC from "./pathbar";
 import { FileSystem } from "./redux";
-import { FileSystemSt } from "./styled";
+import { SyFileSystem } from "./styled";
 
-export default function FileSystemComponent() {
+export default function FileSystemCmpt() {
   const FSExer = new FileSystem.Exer(useDispatch());
-  const { createModal: showCreateModal, modalType, path, shouldUpdate } = FileSystem.useSt();
+  const { createModal, modalType, path, shouldUpdate } = FileSystem.useSt();
 
   useEffect(() => {
     FSExer.Search(path);
@@ -17,19 +17,19 @@ export default function FileSystemComponent() {
 
   return (
     <>
-      <FileSystemSt.Container>
+      <SyFileSystem.Container>
         <ControlBarC />
         <PathBarC />
-        <FileSystemSt.ObjectContainer>
+        <SyFileSystem.ObjectContainer>
           <FsObjectCs />
-        </FileSystemSt.ObjectContainer>
-        {showCreateModal && modalType == FileSystem.ModalType.FOLDER && (
+        </SyFileSystem.ObjectContainer>
+        {createModal && modalType == FileSystem.ModalType.FOLDER && (
           <CreateModal modalType={FileSystem.ModalType.FOLDER} />
         )}
-        {showCreateModal && modalType == FileSystem.ModalType.FILE && (
+        {createModal && modalType == FileSystem.ModalType.FILE && (
           <CreateModal modalType={FileSystem.ModalType.FILE} />
         )}
-      </FileSystemSt.Container>
+      </SyFileSystem.Container>
     </>
   );
 }

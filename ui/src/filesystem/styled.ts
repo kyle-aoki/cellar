@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export namespace FileSystemSt {
+export namespace SyFileSystem {
   export const Container = styled.div`
     display: flex;
     flex-direction: column;

@@ -1,3 +1,4 @@
+import { Content } from "../model/content";
 import FsObject from "../model/fsobject";
 import fetchJSON from "../util/fetch-json";
 
@@ -9,11 +10,12 @@ export default class API {
       body: JSON.stringify(fsobject),
     })) as FsObject;
   }
-  static async find(fsobject: FsObject): Promise<FsObject> {
-    return (await fetchJSON(`${API.host}/secret/find`, {
+  static async find(fsobject: FsObject): Promise<Content> {
+    const json = await fetchJSON(`${API.host}/content/find`, {
       method: "POST",
       body: JSON.stringify(fsobject),
-    })) as FsObject;
+    });
+    return json as Content;
   }
   static async search(fsobject: FsObject): Promise<FsObject[]> {
     return (await fetchJSON(`${API.host}/secret/search`, {

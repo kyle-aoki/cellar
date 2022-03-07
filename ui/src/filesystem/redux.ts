@@ -1,10 +1,11 @@
-import { Ac, BaseDispatcher as BaseExer, f, sf } from "../redux/config";
+import { Ac, ActionBuilder, ActionRegistry, BaseExer, BuildReducer, InitReducer, sf } from "../redux/config";
 import { call, put, takeEvery, takeLatest } from "redux-saga/effects";
 import API from "../api";
 import FsObject from "../model/fsobject";
 import { useSelector } from "react-redux";
 import { GlobalState } from "..";
 import { View } from "../view/redux";
+import { Content } from "../model/content";
 
 export namespace FileSystem {
   export enum ModalType {
@@ -30,11 +31,17 @@ export namespace FileSystem {
   export const workingSt: St = { ...initialSt };
   export const useSt = () => useSelector((st: GlobalState) => st.FileSystem);
 
+  export const [f, Reducer] = InitReducer(initialSt);
+
   // Actions
   const Default = f((st: St, _: Ac) => ({ ...st }));
   const ShouldUpdate = f((st: St, _: Ac) => ({ ...st, shouldUpdate: st.shouldUpdate + 1 }));
   const SetObjects = f((st: St, ac: Ac) => ({ ...st, objects: ac.data.fsObjects }));
-  const ToggleModal = f((st: St, ac: Ac) => ({ ...st, createModal: !st.createModal, modalType: ac.data.modalType }));
+  const ToggleModal = f((st: St, ac: Ac) => ({
+    ...st,
+    createModal: !st.createModal,
+    modalType: ac.data.modalType,
+  }));
 
   const FolderClick = f((st: St, ac: Ac) => {
     st.prevPaths.push(st.path);
@@ -45,6 +52,7 @@ export namespace FileSystem {
   });
 
   const ChangeDirDown = f((st: St, ac: Ac) => {
+    console.log(st);
     if (st.path === "/") return { ...st };
     return { ...st, path: st.prevPaths.pop() };
   });
@@ -67,7 +75,6 @@ export namespace FileSystem {
       name: ac.data.name,
       path: ac.data.st.path,
       file: false,
-      content: null,
     };
     yield call(API.create, newFsObject);
     yield exec.ToggleModal(ModalType.FOLDER);
@@ -79,16 +86,15 @@ export namespace FileSystem {
       name: ac.data.name,
       path: ac.data.st.path,
       file: true,
-      content: "LMFAO",
     };
     yield call(API.create, newFsObject);
     yield exec.ToggleModal(ModalType.FILE);
     yield exec.ShouldUpdate();
   });
   const FindFile = sf(function* (ac: any): any {
-    const ViewExec = new View.Executor(put);
-    const response = yield call(API.find, ac.data);
-    yield ViewExec.SetContent(response.content);
+    const ViewExec = new View.Exer(put);
+    const content = (yield call(API.find, ac.data)) as Content;
+    yield ViewExec.SetContent(content);
   });
 
   export class Exer extends BaseExer {
@@ -106,15 +112,10 @@ export namespace FileSystem {
     FindFile = (name: string, path: string) => this.x(FindFile.ac({ name, path }));
   }
 
-  export function Reducer(st: St = workingSt, ac: Ac) {
-    // prettier-ignore
-    switch (ac.type) {
-        case SetObjects.type:     return SetObjects.lg(st, ac);
-        case ToggleModal.type:    return ToggleModal.lg(st, ac);
-        case FolderClick.type:    return FolderClick.lg(st, ac);
-        case ChangeDirDown.type:  return ChangeDirDown.lg(st, ac);
-        case ShouldUpdate.type:   return ShouldUpdate.lg(st, ac);
-        default:                  return Default.lg(st, ac);
-    }
-  }
+  // export function Reducer(st: St = workingSt, ac: Ac) {
+  //   if (typeof ac.type !== "number") return st;
+  //   const lg = ActionRegistry[ac.type];
+  //   if (!lg) return { ...st };
+  //   return lg(st, ac);
+  // }
 }

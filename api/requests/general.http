@@ -1,0 +1,14 @@
+POST http://localhost:8080/object/new
+
+{
+    "Path": "/abc",
+    "Name": "xyz",
+    "File": true
+}
+###
+POST http://localhost:8080/object/find-path
+
+{
+    "Path": "/abc"
+}
+###

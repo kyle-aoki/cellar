@@ -28,7 +28,7 @@ export namespace ViewStyle {
     }
   `;
   export const EditorContainer = styled.div`
-    height: calc(100% - 30px);
+    height: calc(100% - 60px);
     width: 100%;
     display: flex;
     background-color: #1e1e1e;

@@ -10,7 +10,7 @@ import { View } from "./view/redux";
 
 export interface GlobalState {
   FileSystem: FileSystem.St;
-  View: View.State;
+  View: View.St;
 }
 
 const reducers = combineReducers({

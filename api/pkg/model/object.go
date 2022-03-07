@@ -1,23 +1,27 @@
 package model
 
 type Object struct {
-	Name    string `json:"name" db:"name"`
-	Path    string `json:"path" db:"path"`
-	File    bool   `json:"file" db:"file"`
+	Id   int64  `json:"Id" db:"id"`
+	Name string `json:"Name" db:"name"`
+	Path string `json:"Path" db:"path"`
+	File bool   `json:"File" db:"file"`
 }
 
-func (object Object) InsertQ() string {
-	return `INSERT INTO cellar.object (name, path, file)
-	VALUES (:name, :path, :file);`
+func (o Object) Create() Object {
+	return Object{}
 }
 
-func (object Object) FindQ() string {
-	return `SELECT name, path, file FROM cellar.object
-	WHERE name = :name
-	AND path = :path`
-}
-
-func (object Object) SearchQ() string {
-	return `SELECT name, path, file FROM cellar.object
+func (o Object) FindPath() (*Object, string) {
+	return &o, `SELECT id, name, path, file FROM cellar.object
 	WHERE path = :path`
+}
+
+func (o Object) Exists() (*Object, string) {
+	return &o, `SELECT id, name, path, file FROM cellar.object
+	WHERE path = :path
+	AND name = :name`
+}
+
+func (o Object) New() (*Object, string) {
+	return &o, `INSERT INTO cellar.object (name, path, file) VALUES (:name, :path, :file)`
 }

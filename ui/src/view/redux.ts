@@ -1,32 +1,28 @@
 import { useSelector } from "react-redux";
 import { GlobalState } from "..";
-import { Ac, BaseDispatcher, f, sf } from "../redux/config";
+import { Content } from "../model/content";
+import { Ac, ActionRegistry, BaseExer, BuildReducer, InitReducer, sf } from "../redux/config";
 
 export namespace View {
-  export interface State {
+  export interface St {
+    editing: boolean;
     content: string;
   }
-  export const initialState = {
+  export const initialSt = {
+    editing: false,
     content: "",
   };
-
   export const useState = () => useSelector((state: GlobalState) => state.View);
 
-  export function Reducer(state: State = initialState, action: Ac) {
-    // prettier-ignore
-    switch (action.type) {
-    case Action.SetContent.type: return Action.SetContent.lg(state, action);
-    default: return state;
-    }
-  }
+  export const [f, Reducer] = InitReducer(initialSt);
 
-  export namespace Action {
-    export const SetContent = f((state: State, action: Ac) => {
-      return { ...state, content: action.data.content };
-    });
-  }
+  const SetContent = f((st: St, ac: Ac): St => ({ ...st, content: ac.data.content.content }));
+  const EditingOn = f((st: St, ac: Ac): St => ({ ...st, editing: true }));
+  const OnChange = f((st: St, ac: Ac): St => ({ ...st, content: ac.data.newVal }));
 
-  export class Executor extends BaseDispatcher {
-    SetContent = (content: string) => this.x(Action.SetContent.ac({ content }));
+  export class Exer extends BaseExer {
+    SetContent = (content: Content) => this.x(SetContent.ac({ content }));
+    EditingOn = () => this.x(EditingOn.ac());
+    OnChange = (newVal: string) => this.x(OnChange.ac({ newVal }));
   }
 }

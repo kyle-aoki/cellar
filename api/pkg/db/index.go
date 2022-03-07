@@ -4,7 +4,6 @@ import (
 	"api/pkg/cfg"
 	"api/pkg/util"
 	"context"
-	"database/sql"
 	"fmt"
 	"log"
 
@@ -23,9 +22,8 @@ func BeginTransaction() *Transaction {
 	return &Transaction{Ptr: tx}
 }
 
-func (t Transaction) Rollback(message string) string {
+func (t Transaction) Rollback() {
 	t.rollback()
-	return message
 }
 
 func (t Transaction) rollback() {
@@ -50,16 +48,38 @@ func (t Transaction) MustTransact(err error) {
 	}
 }
 
-func (t Transaction) NamedQuery(query string, arg interface{}) *sqlx.Rows {
+func (t Transaction) NamedQuery(arg any, query string) *sqlx.Rows {
 	rows, err := t.Ptr.NamedQuery(query, arg)
 	t.MustTransact(err)
 	return rows
 }
 
-func (t Transaction) NamedExec(query string, arg interface{}) sql.Result {
+func Row[T any](arg *T, rows *sqlx.Rows) (*T, bool) {
+	defer rows.Close()
+	for rows.Next() {
+		rows.StructScan(arg)
+		return arg, false
+	}
+	return arg, true
+}
+
+func Rows[T any](rows *sqlx.Rows) []*T {
+	defer rows.Close()
+	ts := *new([]*T)
+	for rows.Next() {
+		t := new(T)
+		rows.StructScan(&t)
+		ts = append(ts, t)
+	}
+	return ts
+}
+
+func (t Transaction) NamedExec(arg any, query string) int64 {
 	result, err := t.Ptr.NamedExec(query, arg)
 	t.MustTransact(err)
-	return result
+	i64, err := result.RowsAffected()
+	t.MustTransact(err)
+	return i64
 }
 
 var Conn *sqlx.DB

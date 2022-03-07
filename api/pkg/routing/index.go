@@ -1,8 +1,7 @@
 package routing
 
 import (
-	"api/pkg/handler/content"
-	"api/pkg/handler/secret"
+	"api/pkg/controller"
 	"api/pkg/http_logger"
 
 	"github.com/gofiber/fiber/v2"
@@ -16,20 +15,13 @@ func Init(app *fiber.App) {
 	baseRouter.Use(recover.New())
 	baseRouter.Use(cors.New())
 	baseRouter.Use(http_logger.Log)
-	_ = InitSecretRouter(baseRouter)
-	_ = ContentRouter(baseRouter)
+
+	ObjectRouter(baseRouter)
 }
 
-func InitSecretRouter(baseRouter fiber.Router) fiber.Router {
-	secretRouter := baseRouter.Group("/secret")
-	secretRouter.Post("/create", secret.Create)
-	secretRouter.Post("/find", secret.Find)
-	secretRouter.Post("/search", secret.Search)
-	return secretRouter
-}
-
-func ContentRouter(baseRouter fiber.Router) fiber.Router {
-	contentRouter := baseRouter.Group("/content")
-	contentRouter.Post("/new", content.New)
-	return contentRouter
+func ObjectRouter(baseRouter fiber.Router) {
+	objectRouter := baseRouter.Group("/object")
+	oc := controller.ObjectController{}
+	objectRouter.Post("/new", oc.New)
+	objectRouter.Post("/find-path", oc.FindPath)
 }

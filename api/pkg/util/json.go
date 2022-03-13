@@ -7,3 +7,9 @@ func JSON(arg interface{}) []byte {
 	MustExec(err)
 	return bytes
 }
+
+func ErrorJson(err error) []byte {
+	errMsg := make(map[string]string)
+	errMsg["error"] = err.Error()
+	return JSON(errMsg)
+}

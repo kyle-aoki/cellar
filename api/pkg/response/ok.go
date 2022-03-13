@@ -5,19 +5,8 @@ import (
 	"encoding/json"
 )
 
-type OkResponse struct {
-	Code    int    `json:"code"`
-	Message string `json:"message"`
-	Data    any    `json:"data"`
-}
-
-func Ok(message string, data any) []byte {
-	or := OkResponse{
-		Code:    200,
-		Message: message,
-		Data:    data,
-	}
-	j, err := json.Marshal(or)
+func Ok(data any) []byte {
+	j, err := json.Marshal(data)
 	util.MustExec(err)
 	return j
 }

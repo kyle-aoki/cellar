@@ -7,8 +7,8 @@ type Object struct {
 	File bool   `json:"File" db:"file"`
 }
 
-func (o Object) Create() Object {
-	return Object{}
+func NewObject() *Object {
+	return &Object{}
 }
 
 func (o Object) FindPath() (*Object, string) {

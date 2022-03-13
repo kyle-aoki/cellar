@@ -3,29 +3,32 @@ package service
 import (
 	"api/pkg/db"
 	"api/pkg/model"
-	"api/pkg/response"
+	"errors"
 )
 
-func New(object *model.Object) *model.Object {
+type ObjectService struct{}
+
+func (os ObjectService) New() (*model.Object, error) {
 	tx := db.BeginTransaction()
-	rows := tx.NamedQuery(object.Exists())
-	objects := db.Rows[model.Object](rows)
-	if len(objects) != 0 {
+
+	newObject := model.NewObject()
+
+	rows := tx.NamedQuery(newObject.Exists())
+
+	_, empty := db.Row(model.NewObject(), rows)
+
+	if !empty {
 		tx.Rollback()
-		response.Error(400, "Object already exists.")
+		return nil, errors.New("Already exists.")
 	}
-	ra := tx.NamedExec(object.New())
+
+	ra := tx.NamedExec(newObject.New())
+
 	if ra != 1 {
 		tx.Rollback()
-		response.Error(500, "Something went wrong.")
+		return nil, errors.New("Failed to insert.")
 	}
-	tx.Commit()
-	return object
-}
 
-func FindPath(object *model.Object) []*model.Object {
-	tx := db.BeginTransaction()
-	rows := tx.NamedQuery(object.FindPath())
-	objects := db.Rows[model.Object](rows)
-	return objects
+	tx.Commit()
+	return newObject, nil
 }

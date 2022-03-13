@@ -23,5 +23,4 @@ func ObjectRouter(baseRouter fiber.Router) {
 	objectRouter := baseRouter.Group("/object")
 	oc := controller.ObjectController{}
 	objectRouter.Post("/new", oc.New)
-	objectRouter.Post("/find-path", oc.FindPath)
 }
